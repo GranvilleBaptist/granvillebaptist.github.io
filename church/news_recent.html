@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News - Granville Baptist Church</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <img
+      src="../topper.png"
+      alt="Granville Baptist Church"
+      class="header-image"
+    />
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><a href="social.html">Social</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+      </ul>
+    </nav>
+    <main>
+      <div class="content-container">
+        <h1>Church News</h1>
+        <p>
+          Stay updated with the latest news and events from Granville Baptist
+          Church.
+        </p>
+      </div>
+      <div class="calendar-articles-section">
+        <div class="monthly-calendar-wrapper">
+          <h3>Events Calendar</h3>
+          <div class="monthly-calendar"></div>
+        </div>
+        <div class="news-articles">
+          <article class="news-article">
+            <h2>Church Member Classes Beginning Soon!</h2>
+            <p>
+              Classes will begin for those interested in learning about the
+              church, how to become a member, and the views of our church. March
+              1,8, and 15 @ 8:00 AM.
+            </p>
+          </article>
+          <article class="news-article">
+            <h2>Article 2</h2>
+            <p>This is article 2 placeholder.</p>
+          </article>
+          <article class="news-article">
+            <h2>Article 3</h2>
+            <p>This is article 3 placeholder.</p>
+          </article>
+        </div>
+        <div class="weekly-calendar-wrapper">
+          <h3 class="weekly-title">Week of <span id="weekDate"></span></h3>
+          <div class="weekly-calendar"></div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div class="footer-nav">
+        <a href="../index.html">Home</a>
+        <a href="news.html">News</a>
+        <a href="social.html">Social</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+      <div class="footer-content">
+        <div class="footer-row">
+          <div class="footer-section address">
+            <h3>Address</h3>
+            <p>23 Quaker Street, Granville, NY</p>
+          </div>
+          <div class="footer-section services">
+            <h3>Sunday Services</h3>
+            <p>Bible School: 8:00 AM</p>
+            <p>Sermon: 9:30 AM</p>
+            <p>Fellowship to follow</p>
+          </div>
+          <div class="footer-section activities">
+            <h3>Weekly Activities</h3>
+            <p>Monday Prayer: 6:30 PM</p>
+            <p>Wednesday Study: 6:30 PM</p>
+            <p>Saturday Breakfast: 8:00 AM</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+                            <script>
+      /**
+       * EVENTS FILE:
+       *   ./events.csv  (must be in the SAME folder as this news.html)
+       *
+       * Supported line formats:
+       * 1) NEW (recommended):
+       *    active|inactive,  MM/DD/YY or DayOfWeek or MonthlyRule,  HH:MM AM/PM (or blank),  Event Title
+       *
+       * 2) OLD (still supported):
+       *    MM/DD/YY or DayOfWeek,  HH:MM AM/PM (or blank),  Event Title
+       *
+       * MonthlyRule examples (recurring):
+       *   3rd Sunday
+       *   1st Wednesday
+       *   last Saturday
+       *   1st & 2nd & 4th Sunday
+       *   2nd, 4th Wednesday
+       *
+       * Notes:
+       * - Lines starting with # are ignored (use for notes/instructions).
+       * - Blank times are allowed; those events will display with no time and sort to the bottom of the day.
+       */
+
+      // Cache-busting during local testing. Set to false if you prefer caching.
+      const DEV_NO_CACHE = true;
+      const EVENTS_URL = "./events.csv" + (DEV_NO_CACHE ? ("?v=" + Date.now()) : "");
+
+      // Internal event stores
+      // churchEvents:  {0: [{time,name,active},...], ...} where 0=Sun..6=Sat
+      // datedEvents:   {"YYYY-MM-DD": [{time,name,active},...], ...}
+      // monthlyRules:  [{ordinal: 1-5 or "last", weekday: 0-6, time, name, active}, ...]
+      const churchEvents = {};
+      const datedEvents = {};
+      const monthlyRules = [];
+
+      const monthNames = [
+        "January","February","March","April","May","June",
+        "July","August","September","October","November","December"
+      ];
+      const dayNames = [
+        "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
+      ];
+
+      // View state (month/year you are looking at)
+      const now = new Date();
+      let viewYear = now.getFullYear();
+      let viewMonth = now.getMonth(); // 0-11
+
+      const NO_TIME = "__NO_TIME__";
+
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      function toISODate(d) {
+        return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+      }
+
+      function splitCSVLine(line) {
+        // Simple CSV splitter with quote support.
+        const out = [];
+        let cur = "";
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') {
+            if (inQuotes && line[i+1] === '"') {
+              cur += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (ch === "," && !inQuotes) {
+            out.push(cur.trim());
+            cur = "";
+          } else {
+            cur += ch;
+          }
+        }
+        out.push(cur.trim());
+        return out;
+      }
+
+      function weekdayStringToIndex(s) {
+        const norm = (s || "").trim().toLowerCase();
+        const map = {
+          sunday: 0, sun: 0,
+          monday: 1, mon: 1,
+          tuesday: 2, tue: 2, tues: 2,
+          wednesday: 3, wed: 3,
+          thursday: 4, thu: 4, thur: 4, thurs: 4,
+          friday: 5, fri: 5,
+          saturday: 6, sat: 6
+        };
+        return map[norm];
+      }
+
+      function mmddyyToISO(mmddyy) {
+        // Accept MM/DD/YY
+        const m = (mmddyy || "").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2})$/);
+        if (!m) return null;
+        const mm = Number(m[1]);
+        const dd = Number(m[2]);
+        const yy = Number(m[3]);
+
+        // Pivot year: 00-69 => 2000-2069, 70-99 => 1970-1999
+        const yyyy = (yy <= 69) ? (2000 + yy) : (1900 + yy);
+
+        if (mm < 1 || mm > 12 || dd < 1 || dd > 31) return null;
+        return `${yyyy}-${pad2(mm)}-${pad2(dd)}`;
+      }
+
+      function statusToActive(status) {
+        const s = (status || "").trim().toLowerCase();
+        if (s === "inactive" || s === "cancelled" || s === "canceled") return false;
+        return true; // default to active
+      }
+
+      function normalizeTime(rawTime) {
+        let t = (rawTime || "").trim();
+        if (!t) return NO_TIME;
+        return t;
+      }
+
+      function parseOrdinalToken(tok) {
+        const t = (tok || "").trim().toLowerCase();
+        if (t === "last") return "last";
+        const m = t.match(/^(\d)(st|nd|rd|th)$/);
+        if (!m) return null;
+        const n = Number(m[1]);
+        if (n < 1 || n > 5) return null;
+        return n;
+      }
+
+      function parseMonthlyRule(s) {
+        // Supports:
+        //   "1st Sunday", "2nd Wed", "3rd Thursday", "4th Fri", "5th Saturday", "last Sunday"
+        //   "1st & 2nd & 4th Sunday"
+        //   "2nd, 4th Wednesday"
+        const raw = (s || "").trim();
+        if (!raw) return null;
+
+        // Normalize whitespace
+        const norm = raw.replace(/\s+/g, " ").trim();
+
+        // Last word should be weekday (Sunday/Monday/etc.)
+        const parts = norm.split(" ");
+        if (parts.length < 2) return null;
+
+        const weekdayPart = parts[parts.length - 1];
+        const wd = weekdayStringToIndex(weekdayPart);
+        if (wd === undefined) return null;
+
+        const ordinalsPart = parts.slice(0, -1).join(" ").trim();
+        if (!ordinalsPart) return null;
+
+        // Split ordinals by "&" or "," (also tolerate "and")
+        const cleaned = ordinalsPart
+          .replace(/\band\b/gi, "&")
+          .replace(/\s*&\s*/g, "&")
+          .replace(/\s*,\s*/g, ",")
+          .trim();
+
+        const tokens = cleaned.split(/[&,]/).map(t => t.trim()).filter(Boolean);
+        if (tokens.length === 0) return null;
+
+        const ordinals = [];
+        for (const tok of tokens) {
+          const o = parseOrdinalToken(tok);
+          if (o === null) return null;
+          ordinals.push(o);
+        }
+
+        return { ordinals, weekday: wd };
+      }
+
+      function isNthWeekdayOfMonth(dateObj, weekday, n) {
+        if (dateObj.getDay() !== weekday) return false;
+        const dayOfMonth = dateObj.getDate();
+        const occurrence = Math.floor((dayOfMonth - 1) / 7) + 1;
+        return occurrence === n;
+      }
+
+      function isLastWeekdayOfMonth(dateObj, weekday) {
+        if (dateObj.getDay() !== weekday) return false;
+        const test = new Date(dateObj);
+        test.setDate(test.getDate() + 7);
+        return test.getMonth() !== dateObj.getMonth();
+      }
+
+      async function loadEventsFromCSV() {
+        // Clear existing stores
+        for (const k of Object.keys(churchEvents)) delete churchEvents[k];
+        for (const k of Object.keys(datedEvents)) delete datedEvents[k];
+        monthlyRules.length = 0;
+
+        const resp = await fetch(EVENTS_URL);
+        if (!resp.ok) throw new Error(`Failed to load events.csv (${resp.status})`);
+        const text = await resp.text();
+
+        const lines = text
+          .split(/\r?\n/)
+          .map(l => l.trim())
+          .filter(l => l.length > 0)
+          .filter(l => !l.startsWith("#"));
+
+        for (const line of lines) {
+          const cols = splitCSVLine(line);
+
+          // NEW format (4+ columns): status, date/day/monthlyRule, time (or blank), title...
+          if (cols.length >= 4) {
+            const active = statusToActive(cols[0]);
+            const key = cols[1] || "";
+            const time = normalizeTime(cols[2]);
+            const name = cols.slice(3).join(",").trim();
+            if (!name) continue;
+
+            const iso = mmddyyToISO(key);
+            if (iso) {
+              if (!datedEvents[iso]) datedEvents[iso] = [];
+              datedEvents[iso].push({ time, name, active });
+              continue;
+            }
+
+            const dow = weekdayStringToIndex(key);
+            if (dow !== undefined) {
+              if (!churchEvents[dow]) churchEvents[dow] = [];
+              churchEvents[dow].push({ time, name, active });
+              continue;
+            }
+
+            const rule = parseMonthlyRule(key);
+            if (rule) {
+              for (const ord of rule.ordinals) {
+                monthlyRules.push({ ordinal: ord, weekday: rule.weekday, time, name, active });
+              }
+              continue;
+            }
+
+            continue;
+          }
+
+          // OLD format (3 columns): date/day, time (or blank), title (defaults to active)
+          if (cols.length === 3) {
+            const active = true;
+            const key = cols[0] || "";
+            const time = normalizeTime(cols[1]);
+            const name = (cols[2] || "").trim();
+            if (!name) continue;
+
+            const iso = mmddyyToISO(key);
+            if (iso) {
+              if (!datedEvents[iso]) datedEvents[iso] = [];
+              datedEvents[iso].push({ time, name, active });
+              continue;
+            }
+
+            const dow = weekdayStringToIndex(key);
+            if (dow !== undefined) {
+              if (!churchEvents[dow]) churchEvents[dow] = [];
+              churchEvents[dow].push({ time, name, active });
+              continue;
+            }
+          }
+        }
+      }
+
+      function getMonthlyRuleEventsForDate(dateObj) {
+        if (monthlyRules.length === 0) return [];
+        const out = [];
+        for (const r of monthlyRules) {
+          if (r.ordinal === "last") {
+            if (isLastWeekdayOfMonth(dateObj, r.weekday)) out.push(r);
+          } else {
+            if (isNthWeekdayOfMonth(dateObj, r.weekday, r.ordinal)) out.push(r);
+          }
+        }
+        return out.map(r => ({ time: r.time, name: r.name, active: r.active }));
+      }
+
+      function getEventsForDate(dateObj) {
+        const iso = toISODate(dateObj);
+        const weekdayEvents = churchEvents[dateObj.getDay()] || [];
+        const specificEvents = datedEvents[iso] || [];
+        const monthlyEvents = getMonthlyRuleEventsForDate(dateObj);
+        // Order: dated first, then monthly-rules, then weekly
+        return [...specificEvents, ...monthlyEvents, ...weekdayEvents];
+      }
+
+      function changeMonth(direction) {
+        viewMonth += direction;
+        if (viewMonth < 0) {
+          viewMonth = 11;
+          viewYear -= 1;
+        } else if (viewMonth > 11) {
+          viewMonth = 0;
+          viewYear += 1;
+        }
+        generateMonthlyCalendar();
+      }
+
+      function generateMonthlyCalendar() {
+        const firstDay = new Date(viewYear, viewMonth, 1);
+        const lastDay = new Date(viewYear, viewMonth + 1, 0);
+        const prevLastDay = new Date(viewYear, viewMonth, 0).getDate();
+        const nextDays = 7 - lastDay.getDay();
+
+        let html = `<div class="month-header">${monthNames[viewMonth]} ${viewYear}</div>`;
+        html +=
+          '<div class="weekdays"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>';
+        html += '<div class="days">';
+
+        for (let i = prevLastDay - firstDay.getDay() + 1; i <= prevLastDay; i++) {
+          html += `<div class="day other-month">${i}</div>`;
+        }
+
+        const today = new Date();
+        for (let i = 1; i <= lastDay.getDate(); i++) {
+          const dateObj = new Date(viewYear, viewMonth, i);
+          const iso = toISODate(dateObj);
+          const isToday =
+            i === today.getDate() &&
+            viewMonth === today.getMonth() &&
+            viewYear === today.getFullYear();
+
+          const events = getEventsForDate(dateObj);
+          const hasAny = events.length > 0;
+          const hasActive = events.some(e => e.active);
+          const hasOnlyInactive = hasAny && !hasActive;
+
+          const extraClass = hasAny ? "has-event" : "";
+          const cancelledClass = hasOnlyInactive ? "has-cancelled" : "";
+
+          html += `<div class="day ${isToday ? "today" : ""} ${extraClass} ${cancelledClass}" data-date="${iso}" title="${hasAny ? (hasOnlyInactive ? "Only cancelled events" : "Events scheduled") : ""}">${i}</div>`;
+        }
+
+        for (let i = 1; i <= nextDays; i++) {
+          html += `<div class="day other-month">${i}</div>`;
+        }
+
+        html += "</div>";
+        document.querySelector(".monthly-calendar").innerHTML = html;
+
+        document.querySelectorAll(".day:not(.other-month)").forEach((day) => {
+          day.addEventListener("click", function () {
+            showWeeklyCalendar(this.dataset.date);
+          });
+        });
+      }
+
+      function renderEventRow(event) {
+        const displayTime = (event.time === NO_TIME) ? "" : event.time;
+
+        if (event.active) {
+          return `<div class="event">
+            <span class="event-time">${displayTime}</span>
+            <span class="event-name">${event.name}</span>
+          </div>`;
+        }
+
+        return `<div class="event" style="opacity:0.6;">
+          <div>
+            <span class="event-time" style="text-decoration:line-through;">${displayTime}</span>
+            <span class="event-name" style="text-decoration:line-through; margin-left:6px;">${event.name}</span>
+          </div>
+          <div style="font-size:0.85em; margin-top:2px;">Cancelled</div>
+        </div>`;
+      }
+
+      function showWeeklyCalendar(dateStr) {
+        const [year, month, day] = dateStr.split("-").map(Number);
+        const selectedDate = new Date(year, month - 1, day);
+
+        const firstDay = new Date(selectedDate);
+        firstDay.setDate(selectedDate.getDate() - selectedDate.getDay());
+
+        const weekStart = new Date(firstDay);
+        const weekEnd = new Date(firstDay);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+
+        document.getElementById("weekDate").textContent =
+          `${weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${weekEnd.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+
+        let html = '<div class="week-view">';
+
+        for (let i = 0; i < 7; i++) {
+          const dayDate = new Date(firstDay);
+          dayDate.setDate(dayDate.getDate() + i);
+
+          const events = getEventsForDate(dayDate);
+          const dayLabel = `${dayNames[dayDate.getDay()]} ${dayDate.toLocaleDateString("en-US", { month: "numeric", day: "numeric" })}`;
+
+          if (events.length === 0) {
+            html += `<div class="day-column no-event-day">
+              <div class="no-events">${dayLabel} No Events</div>
+            </div>`;
+            continue;
+          }
+
+          html += `<div class="day-column">
+            <div class="day-header">${dayLabel}</div>
+            <div class="events-container">`;
+
+          const sorted = [...events].sort((a, b) => {
+            if (a.active !== b.active) return a.active ? -1 : 1;
+
+            const aNo = a.time === NO_TIME;
+            const bNo = b.time === NO_TIME;
+            if (aNo !== bNo) return aNo ? 1 : -1;
+
+            return (a.time || "").localeCompare(b.time || "");
+          });
+
+          sorted.forEach((event) => {
+            html += renderEventRow(event);
+          });
+
+          html += "</div></div>";
+        }
+
+        html += "</div>";
+        document.querySelector(".weekly-calendar").innerHTML = html;
+      }
+
+      function addMonthNavButtons() {
+        const wrapper = document.querySelector(".monthly-calendar-wrapper");
+        if (!wrapper) return;
+        const h3 = wrapper.querySelector("h3");
+        if (!h3) return;
+
+        if (h3.querySelector(".month-nav-btn")) return;
+
+        const left = document.createElement("button");
+        left.type = "button";
+        left.className = "month-nav-btn";
+        left.textContent = "◀";
+        left.style.marginRight = "8px";
+        left.addEventListener("click", () => changeMonth(-1));
+
+        const right = document.createElement("button");
+        right.type = "button";
+        right.className = "month-nav-btn";
+        right.textContent = "▶";
+        right.style.marginLeft = "8px";
+        right.addEventListener("click", () => changeMonth(1));
+
+        h3.prepend(left);
+        h3.append(right);
+      }
+
+      function showLoadError(msg) {
+        const monthly = document.querySelector(".monthly-calendar");
+        const weekly = document.querySelector(".weekly-calendar");
+
+        const box = (text) =>
+          `<div style="padding:10px; border:1px solid #ccc; border-radius:8px;">
+            <strong>Calendar data could not be loaded.</strong><br/>
+            ${text}
+          </div>`;
+
+        if (monthly) monthly.innerHTML = box(msg);
+        if (weekly) weekly.innerHTML = box(msg);
+      }
+
+      async function initCalendars() {
+        try {
+          await loadEventsFromCSV();
+        } catch (err) {
+          console.error(err);
+          showLoadError(
+            `Make sure <code>events.csv</code> is in the same folder as <code>news.html</code> (your <em>church</em> folder), and you are viewing via Live Server. Check the browser console for details.`
+          );
+          return;
+        }
+
+        addMonthNavButtons();
+        generateMonthlyCalendar();
+        showWeeklyCalendar(toISODate(new Date()));
+      }
+
+      initCalendars();
+    </script>
+  </body>
+</html>

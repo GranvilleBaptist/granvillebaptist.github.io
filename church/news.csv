@@ -1,0 +1,19 @@
+# =========================================
+# Granville Baptist Church - News Items
+# =========================================
+# Format (one item per line):
+#   active|inactive, Title, Body
+#   h, active|inactive, Title, Body
+#
+# Notes:
+# - "h" marks an item as a home-page highlight candidate.
+# - Home page fills the 3 highlight slots with ACTIVE highlighted items first, then other ACTIVE items.
+# - News page still shows the first 3 ACTIVE items.
+# - Use quotes if you need commas:
+#   active, "Title, with comma", "Body, with comma"
+# =========================================
+
+active, Church Member Classes Beginning Soon!, Classes will begin for those interested in learning about the church, how to become a member, and the views of our church. March 1, 8, and 15 @ 8:00 AM.
+active, Revival Services Coming Soon!, We will be hosting a Revival Service on March 6th @ 6:00 PM please bring a friend.
+active, This Months Missions Tithe Will Go To, Retired Missionaries and Ministers ABC.
+h, active, Test Message 1, This is a Test

@@ -1,0 +1,36 @@
+# =========================================
+# Granville Baptist Church - Calendar Events
+# =========================================
+# Format (one event per line):
+#   active|inactive,  MM/DD/YY or DayOfWeek,  HH:MM AM/PM,  Event Title
+#
+# Examples:
+#   active, Sunday, 08:00 AM, Sunday School
+#   active, 04/09/26, 10:30 AM, Test Event
+#   inactive, 04/09/26, 10:30 AM, Test Event
+#
+# Notes:
+# - Lines starting with # are ignored (safe for pastor notes).
+# - DayOfWeek can be: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday (or Sun/Mon/etc.)
+# - Dates must be MM/DD/YY
+# - Times should be like 08:00 AM or 6:30 PM
+# =========================================
+
+# Repeating Events:
+active, Sunday, 08:00 AM, Sunday School
+active, Sunday, 09:30 AM, Sermon
+active, 1st Sunday, , Game Day During Fellowship
+active, 2nd & 4th & 5th Sunday, , Coffee Fellowship After Sermon
+active, 3rd Sunday, , Pot Blessing Fellowship After Sermon
+active, Wednesday, 06:30 PM, Bible Study
+active, Saturday, 08:00 AM, Men's Breakfast @ Pine Grove
+
+# One-time events:
+active, 03/01/26, 08:00 AM, Church Member Class
+active, 03/05/26, 06:00 PM, Revival Leaders Meeting
+active, 03/06/26, 06:00 PM, Revival Service
+active, 03/08/26, 08:00 AM, Church Member Class
+active, 03/15/26, 08:00 AM, Church Member Class
+
+# Example cancelled event (shows grey + strike-through + "Cancelled"):
+# inactive, 04/09/26, 10:30 AM, Test Event
