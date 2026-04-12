@@ -13,7 +13,9 @@
 #   active, "Title, with comma", "Body, with comma"
 # =========================================
 
-active, Church Member Classes Beginning Soon!, Classes will begin for those interested in learning about the church, how to become a member, and the views of our church. March 1, 8, and 15 @ 8:00 AM.
-active, Revival Services Coming Soon!, We will be hosting a Revival Service on March 6th @ 6:00 PM please bring a friend.
-active, This Months Missions Tithe Will Go To, Retired Missionaries and Ministers ABC.
-h, active, Test Message 1, This is a Test
+inactive, Church Member Classes Beginning Soon!, Classes will begin for those interested in learning about the church, how to become a member, and the views of our church. March 1, 8, and 15 @ 8:00 AM.
+inactive, Revival Services Coming Soon!, We will be hosting a Revival Service on March 6th @ 6:00 PM please bring a friend.
+h, active, This Months Missions Tithe Will Go To, America For Christ Offering ABC.
+inactive, Test Message 1, This is a Test
+h, active, Join us for Bible Study Wednesday nights from 6:30PM-8:00PM
+h, active, Pot Blessing Lunch after service this Sunday 4/19
