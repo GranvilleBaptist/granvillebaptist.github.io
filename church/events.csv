@@ -2,35 +2,40 @@
 # Granville Baptist Church - Calendar Events
 # =========================================
 # Format (one event per line):
-#   active|inactive,  MM/DD/YY or DayOfWeek,  HH:MM AM/PM,  Event Title
+# Status, MM/DD/YY or DayOfWeek or MonthlyRule, Time, Event Title, show_in_footer
 #
-# Examples:
-#   active, Sunday, 08:00 AM, Sunday School
-#   active, 04/09/26, 10:30 AM, Test Event
-#   inactive, 04/09/26, 10:30 AM, Test Event
+# show_in_footer: yes = calendar and regular footer; no = calendar only.
+# Only recurring events can be in the regular footer. A missing flag defaults to no.
+# Status: active = scheduled; inactive or cancelled = shown as cancelled.
 #
-# Notes:
-# - Lines starting with # are ignored (safe for pastor notes).
-# - DayOfWeek can be: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday (or Sun/Mon/etc.)
-# - Dates must be MM/DD/YY
-# - Times should be like 08:00 AM or 6:30 PM
+# To cancel just one occurrence, use cancel with the exact event title:
+# cancel, 11/04/26, , Bible Study, no
+# Leave the time blank to match that title, or enter its time to narrow the match.
+# This leaves all other weeks and the regular footer schedule unchanged.
+#
+# DayOfWeek: Sunday through Saturday, or Sun/Mon/etc.
+# MonthlyRule: 1st Sunday; last Saturday; 2nd & 4th & 5th Sunday.
+# Dates: MM/DD/YY (or MM/DD/YYYY). Times: 08:30 AM or 6:30 PM; blank is allowed.
+# Put quotes around titles or rules containing commas, e.g. "Lunch, games, and fellowship".
+# Lines starting with # are ignored and can be used for notes.
 # =========================================
 
 # Repeating Events:
-active, Sunday, 08:30 AM, Sunday School
-active, Sunday, 09:30 AM, Sermon
-active, 1st Sunday, , Game Day During Fellowship
-active, 2nd & 4th & 5th Sunday, , Coffee Fellowship After Sermon
-active, 3rd Sunday, , Pot Blessing Fellowship After Sermon
-active, Wednesday, 06:30 PM, Bible Study
-active, Thursday, 06:00 PM, Corporate Prayer
-active, Saturday, 09:00 AM, Men's Breakfast @ Pine Grove
+active, Sunday, 08:30 AM, Sunday School, yes
+active, Sunday, 09:30 AM, Sermon, yes
+active, 1st Sunday, , Game Day During Fellowship, no
+active, 2nd & 4th & 5th Sunday, , Coffee Fellowship After Sermon, no
+active, 3rd Sunday, , Pot Blessing Fellowship After Sermon, no
+active, Wednesday, 06:30 PM, Bible Study, yes
+active, Thursday, 06:00 PM, Corporate Prayer, yes
+active, Saturday, 09:00 AM, Men's Breakfast @ Pine Grove, yes
 
 # One-time events:
-inactive, 03/01/26, 08:00 AM, Church Member Class
-inactive, 05/17/26, , Baptism Mettowee River After Church
-active, 06/06/26, 09:00 AM, LACE Womens Conference
-active, 06/28/26, , Baptism Mettowee River After Church
-inactive, 11/04/26, , Bible Study This Week
-# Example cancelled event (shows grey + strike-through + "Cancelled"):
-# inactive, 04/09/26, 10:30 AM, Test Event
+inactive, 03/01/26, 08:00 AM, Church Member Class, no
+inactive, 05/17/26, , Baptism Mettowee River After Church, no
+active, 06/06/26, 09:00 AM, LACE Womens Conference, no
+active, 06/28/26, , Baptism Mettowee River After Church, no
+
+# Cancel only this week's recurring Bible Study:
+cancel, 11/04/26, , Bible Study, no
+

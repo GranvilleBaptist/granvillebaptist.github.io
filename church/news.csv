@@ -8,7 +8,7 @@
 # Notes:
 # - "h" marks an item as a home-page highlight candidate.
 # - Home page fills the 3 highlight slots with ACTIVE highlighted items first, then other ACTIVE items.
-# - News page still shows the first 3 ACTIVE items.
+# - News page shows all ACTIVE items in file order.
 # - Use quotes if you need commas:
 #   active, "Title, with comma", "Body, with comma"
 # =========================================
@@ -20,4 +20,5 @@ h, active, This Months Missions Tithe Will Go To, Samaritan's Purse.
 inactive, Test Message 1, This is a Test
 h, active, Join us for Bible Study, Wednesday nights from 6:30PM-8:00PM
 h, active, Save the date! Join us for Lunch, Pot Blessing Lunch after service Sunday 11/15
+
 

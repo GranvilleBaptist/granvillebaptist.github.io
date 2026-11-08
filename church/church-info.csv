@@ -1,0 +1,16 @@
+# Setting name, value
+# Put quotes around values that contain commas.
+# Footer labels are optional; the event's own title is used otherwise.
+address, "23 Quaker Street, Granville, NY"
+phone, (518) 361-9447
+email, pastor@growbelievechange.com
+footer_sunday_note, Fellowship to follow
+footer_label.Sunday.Sunday School, Bible School
+footer_label.Sunday.Sermon, Sermon
+footer_label.Wednesday.Bible Study, Wednesday Study
+footer_label.Thursday.Corporate Prayer, Thursday Prayer
+footer_label.Saturday.Men's Breakfast @ Pine Grove, Saturday Breakfast
+social.facebook, https://www.facebook.com
+social.instagram, https://www.instagram.com
+social.twitter, https://www.twitter.com
+social.youtube, https://www.youtube.com

@@ -1,0 +1,7 @@
+title: Granville Baptist Church
+url: https://growbelievechange.com
+baseurl: ""
+markdown: kramdown
+exclude:
+  - README.md
+  - tests

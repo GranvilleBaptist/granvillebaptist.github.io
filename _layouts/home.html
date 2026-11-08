@@ -1,0 +1,38 @@
+---
+layout: default
+---
+<div class="main-content-wrapper">
+  <div class="photos-reel">
+    <h3>Photo Gallery</h3>
+    <div class="carousel" id="photo-carousel">
+      <div class="carousel-item active">
+        <div class="reel-placeholder">Loading photos...</div>
+      </div>
+    </div>
+  </div>
+  <div class="welcome-container">
+    <h1>{{ page.welcome | escape }}</h1>
+    <h2>{{ page.tagline | escape }}</h2>
+    <h3 data-verse-title>Verse of the Week</h3>
+    <p data-verse-body>Loading the weekly verse...</p>
+  </div>
+  <div class="news-highlight-reel">
+    <h3>News Highlights</h3>
+    <div class="carousel news-carousel">
+      <div class="carousel-item active">
+        <div class="news-item-container"><p>Loading news...</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="three-column-section">
+  {% for column in page.columns %}
+  <div class="column-container">
+    <h2>{{ column.title | escape }}</h2>
+    <p>{{ column.text | escape }}</p>
+  </div>
+  {% endfor %}
+</div>
+<div class="jesus-container">
+  {{ content }}
+</div>
