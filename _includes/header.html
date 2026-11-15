@@ -1,0 +1,12 @@
+<header class="gbc-header">
+  <div class="gbc-wrap">
+    <a class="gbc-brand" href="{{ '/index.html' | relative_url }}">{{ site.title | escape }}</a>
+    <nav class="gbc-nav" aria-label="Church navigation">
+      <a href="{{ '/index.html' | relative_url }}"{% if page.page_type == 'home' %} aria-current="page"{% endif %}>Home</a>
+      <a href="{{ '/church/about.html' | relative_url }}"{% if page.page_type == 'about' %} aria-current="page"{% endif %}>Our Church</a>
+      <a href="{{ '/church/contact.html' | relative_url }}"{% if page.page_type == 'contact' or page.page_type == 'social' %} aria-current="page"{% endif %}>Visit &amp; Contact</a>
+      <a href="{{ '/church/news.html' | relative_url }}"{% if page.page_type == 'news' or page.page_type == 'calendar' %} aria-current="page"{% endif %}>Events &amp; News</a>
+      <a href="{{ '/photos/' | relative_url }}"{% if page.page_type == 'photos' %} aria-current="page"{% endif %}>Photos</a>
+    </nav>
+  </div>
+</header>
