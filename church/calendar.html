@@ -1,0 +1,44 @@
+---
+layout: default
+title: Calendar - Granville Baptist Church
+page_type: calendar
+---
+<div class="gbc-page-intro">
+  <div class="gbc-wrap">
+    <p class="gbc-eyebrow">Granville Baptist Church</p>
+    <h1>Church Calendar</h1>
+  </div>
+</div>
+<section class="gbc-section gbc-calendar-section" aria-labelledby="gbc-calendar-month">
+  <div class="gbc-wrap">
+    <a class="gbc-link gbc-calendar-back" href="{{ '/church/news.html' | relative_url }}">Back to Events &amp; News</a>
+    <div class="gbc-calendar-toolbar">
+      <h2 id="gbc-calendar-month" data-calendar-month aria-live="polite"></h2>
+      <div class="gbc-calendar-controls">
+        <button type="button" class="gbc-calendar-step" data-calendar-step="-1" aria-label="Previous month">Previous</button>
+        <button type="button" class="gbc-calendar-step" data-calendar-step="1" aria-label="Next month">Next</button>
+      </div>
+    </div>
+    <table class="gbc-calendar-grid" aria-labelledby="gbc-calendar-month">
+      <thead>
+        <tr>
+          <th scope="col" aria-label="Sunday">Sun</th>
+          <th scope="col" aria-label="Monday">Mon</th>
+          <th scope="col" aria-label="Tuesday">Tue</th>
+          <th scope="col" aria-label="Wednesday">Wed</th>
+          <th scope="col" aria-label="Thursday">Thu</th>
+          <th scope="col" aria-label="Friday">Fri</th>
+          <th scope="col" aria-label="Saturday">Sat</th>
+        </tr>
+      </thead>
+      <tbody data-calendar-grid></tbody>
+    </table>
+    <section class="gbc-calendar-day" aria-labelledby="gbc-calendar-date" aria-live="polite">
+      <div class="gbc-calendar-day-heading">
+        <h3 id="gbc-calendar-date" data-calendar-date></h3>
+        <p>Eastern time</p>
+      </div>
+      <ul class="gbc-events" data-calendar-details></ul>
+    </section>
+  </div>
+</section>
