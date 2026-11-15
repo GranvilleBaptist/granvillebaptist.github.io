@@ -1,0 +1,53 @@
+---
+layout: default
+---
+<div class="gbc-bulletin">
+  <div class="gbc-bulletin-stage" data-bulletin-stage>
+    <section class="gbc-verse gbc-bulletin-panel gbc-bulletin-current" aria-labelledby="gbc-home-verse">
+      <div class="gbc-wrap">
+        <h2 class="gbc-eyebrow" id="gbc-home-verse" data-verse-title>Verse of the Week</h2>
+        <div>
+          <blockquote data-verse-body>Loading the weekly verse...</blockquote>
+          <cite data-verse-reference></cite>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="gbc-wrap gbc-bulletin-links">
+    <a class="gbc-link" href="{{ '/church/news.html' | relative_url }}">Upcoming Events</a>
+  </div>
+</div>
+<section class="gbc-hero" aria-labelledby="gbc-home-welcome">
+  <div class="gbc-wrap">
+    <div>
+      <p class="gbc-eyebrow">{{ page.eyebrow | escape }}</p>
+      <h1 id="gbc-home-welcome">{{ page.welcome | escape }}</h1>
+      <p class="gbc-tagline">{{ page.tagline | escape }}</p>
+      <section class="gbc-visit" aria-labelledby="gbc-home-sunday">
+        <h2 id="gbc-home-sunday">Sundays at GBC</h2>
+        <dl class="gbc-service-times" data-schedule="sunday"></dl>
+        <p class="gbc-fellowship" data-fellowship></p>
+        <div class="gbc-schedule-notice" data-gbc-schedule-notice hidden>
+          <p>Schedule update</p>
+          <ul></ul>
+        </div>
+        <address class="gbc-address" data-church-address></address>
+        <div class="gbc-actions">
+          <a class="gbc-action" data-directions href="https://www.google.com/maps/search/?api=1&amp;query=23%20Quaker%20Street%2C%20Granville%2C%20NY" target="_blank" rel="noopener noreferrer">Get Directions</a>
+          <a class="gbc-link" href="{{ '/church/contact.html' | relative_url }}">Plan a Visit</a>
+        </div>
+      </section>
+    </div>
+    <div class="gbc-hero-media">
+      <figure class="gbc-art">
+        <img src="{{ '/topper.png' | relative_url }}" width="1120" height="747" alt="Granville Baptist Church building illustration" fetchpriority="high" />
+      </figure>
+      <section class="gbc-reel" aria-label="Church photos" aria-roledescription="carousel">
+        <div class="gbc-carousel-window">
+          <div class="gbc-carousel-track" data-photo-track></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+{{ content }}
